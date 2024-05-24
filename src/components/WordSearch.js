@@ -1,4 +1,5 @@
 import React from "react";
+import WordView from "./WordView";
 
 
 const WordSearch = ({searchText, setSearchText}) => {

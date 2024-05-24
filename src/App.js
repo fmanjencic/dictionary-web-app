@@ -7,19 +7,48 @@ import WordView from './components/WordView';
 
 function App() {
 
-  const [searchText, setSearchText] = useState([""]);
+  const [searchText, setSearchText] = useState(""); //Seems to prevent default error
+  const [searchResults, setSearchResults] = useState([""])
 
-  return (
-    <div>
+  //console.log("current searchtext: ", searchText)
 
-        <TopBar/>
-        
-        <WordSearch searchText={searchText} setSearchText={setSearchText}/>
-        
-        <WordView searchText={searchText}/>
+      useEffect(() => {
+        if (searchText.length > 0) {
+          try {
+            fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${searchText}`)
+            .then(response => response.json())
+            .then(data => {   
+            setSearchResults(data)
+            console.log('Here are the results', searchResults)
+            console.log('Length: ', searchResults.length)
+            if (searchResults.length > 0) {
+              console.log('This works!')
+            }
+            if (searchResults.length !== undefined) {
+              console.log('This will appear if not undefined.')
+            }
+          })
+          } catch (error) {
+            console.log('Error: ', error.message)
+          }
+        } else {
+          console.log('Invalid Search Entered')
+        }
+      }, [searchText])   
 
-    </div>
-  );
+    
+      return (
+        <div>
+    
+            <TopBar/>
+            
+            <WordSearch searchText={searchText} setSearchText={setSearchText}/>
+            
+            <WordView searchText={searchText} searchResults={searchResults}/>
+            
+        </div>
+      )
+    
 }
 
 export default App;
